@@ -1,0 +1,3 @@
+import {executeIndependentRun} from '../src/independent-runner.js';
+const mock=async(_url,opts)=>{const {task}=JSON.parse(opts.body);const output=/refund|charge|charged|receipt|invoice|tax amount/i.test(task)?'billing':/login|freez|crash|error|closing|dashboard/i.test(task)?'technical':'sales';return {ok:true,text:async()=>JSON.stringify({output})}};
+const run=await executeIndependentRun({agentId:'example',endpoint:'http://127.0.0.1:4100/task'},[{id:'example'}],{fetchImpl:mock});console.log(JSON.stringify({score:`${run.passed}/${run.total}`,manifestDigest:run.manifestDigest,outputDigest:run.outputDigest,note:'Mock transport demonstration; use the UI and npm run agent:example for real HTTP execution'},null,2));

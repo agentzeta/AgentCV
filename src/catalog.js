@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 export const agents = [
  {id:'atlas',name:'Atlas Research',icon:'◈',category:'Research',skills:['web research','summarization','competitive analysis'],description:'Turn broad research questions into structured briefings with cited sources.',price:'Free demo',owner:'Northstar Labs',tools:['Web','Documents'],sample:'Compare three market-entry strategies for a climate startup.',tags:['Research','Strategy']},
  {id:'pixel',name:'Pixel Studio',icon:'✦',category:'Creative',skills:['design','branding','image prompts'],description:'Create brand directions, creative briefs and campaign concepts.',price:'$9 / project',owner:'Mosaic Works',tools:['Image','Creative briefs'],sample:'Create a brand concept for a new neighborhood bakery.',tags:['Creative','Marketing']},

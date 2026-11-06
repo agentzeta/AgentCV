@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {evaluateSubmission,wilsonInterval,summarizeAgent,publicSuites} from '../src/evals.js';import {EvalStore} from '../src/eval-store.js';import fs from 'node:fs/promises';import os from 'node:os';import path from 'node:path';
+const agents=[{id:'a'}];const valid={agentId:'a',suiteId:'classification',outputs:['billing','technical','sales','billing','technical']};
+test('public suites omit expected answers',()=>assert.equal('expected' in publicSuites()[0].cases[0],false));
+test('scores exact match accurately',()=>{const r=evaluateSubmission(valid,agents);assert.equal(r.passed,5);assert.equal(r.accuracy,1);assert.equal(r.executionVerified,false)});
+test('wrong answers lower score',()=>assert.equal(evaluateSubmission({...valid,outputs:['x',...valid.outputs.slice(1)]},agents).passed,4));
+test('reject unknown agent',()=>assert.throws(()=>evaluateSubmission({...valid,agentId:'no'},agents)));
+test('reject unknown suite',()=>assert.throws(()=>evaluateSubmission({...valid,suiteId:'no'},agents)));
+test('reject incomplete outputs',()=>assert.throws(()=>evaluateSubmission({...valid,outputs:['billing']},agents)));
+test('reject oversized output',()=>assert.throws(()=>evaluateSubmission({...valid,outputs:['x'.repeat(101),...valid.outputs.slice(1)]},agents)));
+test('reject unsafe URL',()=>assert.throws(()=>evaluateSubmission({...valid,sourceUrl:'javascript:alert(1)'},agents)));
+test('wilson interval finite for perfect small sample',()=>{const [lo,hi]=wilsonInterval(5,5);assert.ok(lo<0.6&&hi<=1)});
+test('summary uses latest run not cherry-picked best',()=>{const first=evaluateSubmission(valid,agents),last=evaluateSubmission({...valid,outputs:['x','x','x','x','x']},agents);first.createdAt='2026-01-01';last.createdAt='2026-01-02';const s=summarizeAgent('a',[first,last]);assert.equal(s.suites.classification.accuracy,0);assert.equal(s.suites.classification.runCount,2)});
+test('store append and reload',async()=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'agentcv-eval-'));try{const store=new EvalStore(path.join(dir,'runs.jsonl'));await Promise.all(Array.from({length:10},()=>store.add(evaluateSubmission(valid,agents))));assert.equal((await store.all()).length,10)}finally{await fs.rm(dir,{recursive:true,force:true})}});

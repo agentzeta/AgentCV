@@ -1,6 +1,6 @@
 # AgentCV — AI Agent Resumes & Discovery
 
-**ETHGlobal Mumbai 2026** · Arkiv × World × 0G
+**AgentCV v1.3 · ETHGlobal Mumbai 2026** · Arkiv × World × 0G
 
 A standalone, open-source marketplace for discovering AI agents. Browse profiles, search by skill, get task-based agent recommendations from 0G Private Computer, authenticate human owners with World ID, and publish public agent resumes to Arkiv's Rabdi testnet.
 
@@ -79,3 +79,101 @@ AI assistance was used to draft the code, documentation and test cases during th
 ## License
 
 MIT. No Phoenix, CLEAR, ADMIT, AUTH2, or other confidential portfolio code is included.
+
+## NEW: Evaluation-backed resumes (v1.1)
+
+The **Evidence & Evals** tab adds two transparent public five-case evaluation suites, a self-submitted-output scorer, local run history, per-suite latest scores, case counts, and illustrative Wilson uncertainty intervals. Results are explicitly marked **SELF-SUBMITTED — EXECUTION NOT VERIFIED**. The module does not execute agents, certify skill, or establish independent performance evidence. See [docs/EVALUATION_BACKED_RESUMES.md](docs/EVALUATION_BACKED_RESUMES.md).
+
+```bash
+npm run eval:demo    # illustrative output, no model executed
+npm test             # full suite, after npm install
+```
+
+Data are stored at `data/eval-runs.jsonl` (gitignored), or `EVAL_STORE_PATH` if set. Do not publish private user data or portray demonstration scores as real agent performance.
+
+## v1.2 — Independently executed evaluation runs
+
+AgentCV now has two explicitly different evidence types: **self-submitted outputs** and **runner-observed HTTP execution**. The new runner sends 10 held-out tasks to a local agent HTTP endpoint, records observed outputs, failures and elapsed time, scores the outputs, and saves a replayable manifest and SHA-256 digests. To demonstrate with a real process, run `npm run agent:example` and `npm start` in separate terminals, then use **Evidence & Evals → Independent agent runner**. The example is a deterministic rules-based agent, not an LLM. See [docs/INDEPENDENT_EVALUATIONS.md](docs/INDEPENDENT_EVALUATIONS.md) for the endpoint contract, replay process and security limitations. The runner does not prove model identity or independently certify an agent.
+
+
+## v1.3 — sponsor-integrated evaluation demo
+
+This release includes the v1.2 **independent local HTTP evaluation runner** and the three existing sponsor adapters (Arkiv, World and 0G). They are **implemented but not live-certified**; sponsor credentials and actual transaction/request evidence are required.
+
+### The integrated workflow
+
+1. Search the public agent directory.
+2. Publish a profile to Arkiv and read it back (testnet account and key required).
+3. Match a buyer task to directory agents through 0G (funded Router API key required).
+4. Authenticate the human owner account through World OIDC (registered confidential client required).
+5. Execute a local agent over HTTP against a 10-case benchmark, inspect observed outputs and replay the run.
+
+### Commands
+
+```bash
+npm install
+npm test
+npm run demo:check
+npm run agent:example   # terminal A
+npm start               # terminal B
+```
+
+### Sponsor-specific files
+
+- [Arkiv submission](docs/SPONSOR_ARKIV.md)
+- [World submission](docs/SPONSOR_WORLD.md)
+- [0G submission](docs/SPONSOR_0G.md)
+- [Demo script](docs/DEMO_SCRIPT.md) and [demo flow](docs/DEMO_FLOW.md)
+- [Integration status](docs/INTEGRATION_STATUS.md)
+- [Investor notes](docs/PITCH_NOTES.md)
+- [Workflow diagram](docs/WORKFLOW.svg)
+
+**Security and validity:** The independent runner is a controlled localhost demonstration, not sandboxed execution of arbitrary third-party code. The benchmark is small, fixed and potentially learnable. World authenticates a human account; it does not certify an agent. Arkiv publication uses a single server publisher wallet. 0G request IDs are not independent attestations.
+
+**SDK pinning:** The Arkiv dependency is currently `latest` inherited from the original prototype. Before a reproducible production build, resolve and pin a verified published version and commit `package-lock.json`; no version was invented here.
+
+## NEW — React landing page and interactive demo (v1.4)
+
+The React/Vite frontend is in `frontend/` and preserves the existing Node backend, Arkiv, World, 0G and independent-evaluation modules.
+
+### Development (two terminals)
+
+```bash
+# Terminal A — existing backend
+npm install
+npm start
+
+# Terminal B — React frontend, proxies /api and /auth to the backend
+cd frontend
+npm install
+npm run dev
+```
+
+Open **http://127.0.0.1:5173** for the React UI. The original UI remains at http://127.0.0.1:3000.
+
+### Production-like local demo (one server)
+
+```bash
+npm install
+npm --prefix frontend install
+npm run build:frontend
+npm start
+```
+
+Open **http://127.0.0.1:3000/demo**. Built React assets are served under `/react/` by the existing backend. No public deployment is included.
+
+### React screens
+
+- Discover: dark hero, searchable agent cards, filters, profile modal, sponsor status
+- AI Matchmaker: 0G request when configured; clearly labeled local fallback otherwise
+- Evidence & Evals: real local HTTP evaluation, per-case results, history and replay
+- Publish an Agent: create a local listing; optional World sign-in
+
+### Sponsor setup and demo truthfulness
+
+- Arkiv: SDK adapter is retained; set `ARKIV_PRIVATE_KEY` and `ADMIN_PUBLISH_TOKEN`, then run the documented publishing workflow. The React landing page displays configuration status; a live Arkiv transaction is not automatically performed.
+- 0G: configure `OG_API_KEY` and model settings as described in `.env.example`; the Matchmaker calls `/api/match` and labels fallback when unavailable.
+- World: configure `WORLD_CLIENT_ID` and associated OIDC settings; clicking the avatar or sign-in button starts `/auth/world/start`.
+- Evals: `npm run agent:example` starts a local example agent at `127.0.0.1:4100/task`; run the React Evidence screen against it. Do not expose this local runner to untrusted public endpoints.
+
+**Build verification:** source and archive were checked, but installing frontend dependencies in this environment timed out; the compiled React production bundle is not included. Run `npm --prefix frontend install && npm run build:frontend` locally. Existing focused evaluation tests pass; dependency-based tests require `npm install`.

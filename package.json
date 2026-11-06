@@ -1,1 +1,30 @@
-{"name":"agentcv-mumbai","version":"1.0.0","private":true,"type":"module","engines":{"node":">=22"},"scripts":{"start":"node src/server.js","dev":"node --watch src/server.js","test":"node --test tests/*.test.js","arkiv:publish":"node scripts/publish-arkiv.js","arkiv:read":"node scripts/read-arkiv.js"},"dependencies":{"@arkiv-network/sdk":"latest","viem":"^2.37.0","jose":"^6.1.0"},"license":"MIT"}
+{
+  "name": "agentcv-mumbai",
+  "version": "1.4.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test tests/*.test.js",
+    "arkiv:publish": "node scripts/publish-arkiv.js",
+    "arkiv:read": "node scripts/read-arkiv.js",
+    "eval:demo": "node scripts/eval-demo.js",
+    "agent:example": "node scripts/example-agent.js",
+    "eval:independent-demo": "node scripts/independent-demo.js",
+    "demo:check": "node scripts/demo-check.js",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "install:frontend": "npm --prefix frontend install",
+    "demo:react": "npm run build:frontend && npm start"
+  },
+  "dependencies": {
+    "@arkiv-network/sdk": "latest",
+    "viem": "^2.37.0",
+    "jose": "^6.1.0"
+  },
+  "license": "MIT"
+}

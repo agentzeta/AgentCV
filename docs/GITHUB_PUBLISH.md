@@ -15,7 +15,7 @@ git push -u origin main
 ```
 
 5. Verify `.env` and private keys are absent from the repo. Never paste secrets into GitHub issues or demo video.
-6. For deployment, create a Node.js web service on Render/Railway/Fly or another Node 22-compatible host. Build command `npm ci`; start command `npm start`; set `BASE_URL` to your HTTPS URL. Configure World callback URL to `https://YOUR_DOMAIN/auth/world/callback` and set matching `WORLD_REDIRECT_URI`.
+6. For deployment, create a Node.js web service on Render/Railway/Fly or another Node 22-compatible host. Build command `npm install` (until a verified lockfile is generated); start command `npm start`; set `BASE_URL` to your HTTPS URL. Configure World callback URL to `https://YOUR_DOMAIN/auth/world/callback` and set matching `WORLD_REDIRECT_URI`.
 7. Add sponsor API keys only in hosting provider secret/environment settings. Fund only a dedicated testnet wallet for Arkiv.
 8. Run each sponsor's live happy and failure paths. Add actual Arkiv transaction and 0G request ID to README and the submission. Do not publish unverified placeholders as evidence.
 9. Add demo video URL, live URL and team contacts to ETHGlobal submission.
