@@ -1,0 +1,15 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {agents,searchAgents,normalizeAgent} from '../src/catalog.js';import {shortlistFallback,matchOn0G} from '../src/og.js';import {startWorld,finishWorld} from '../src/world.js';import {createServer} from '../src/server.js';
+test('seeded agents',()=>assert.equal(agents.length,6));
+test('search by skill',()=>assert.ok(searchAgents('budget').some(x=>x.id==='ledger')));
+test('search by category',()=>assert.equal(searchAgents('','Creative').length,1));
+test('search no result',()=>assert.equal(searchAgents('not-existing-xyz').length,0));
+test('normalize profile',()=>assert.equal(normalizeAgent({name:'Demo',description:'A useful testing assistant',category:'Research',skills:['Testing']}).skills[0],'Testing'));
+test('reject empty skill',()=>assert.throws(()=>normalizeAgent({name:'Demo',description:'A useful testing assistant',category:'Research',skills:[]})));
+test('reject tiny description',()=>assert.throws(()=>normalizeAgent({name:'Demo',description:'x',category:'Research',skills:['Test']})));
+test('fallback marked non AI',()=>assert.ok(shortlistFallback('research',agents).length>0));
+test('World start PKCE state and nonce',()=>{const a=startWorld({WORLD_CLIENT_ID:'abc',WORLD_CLIENT_SECRET:'secret',WORLD_REDIRECT_URI:'http://localhost:3000/auth/world/callback'});assert.equal(new URL(a.url).searchParams.get('code_challenge_method'),'S256');assert.ok(a.state.length>20)});
+test('World rejects invalid callback before network',async()=>{await assert.rejects(()=>finishWorld({code:'abc',state:'wrong',iss:'https://auth.world.org'},{state:'right',created:Date.now()},{},()=>{throw Error('should not fetch')}))});
+test('0G requires credentials',async()=>await assert.rejects(()=>matchOn0G('hello',agents,fetch,{})));
+test('0G validates recommended IDs and request ID',async()=>{const fetcher=async()=>({ok:true,status:200,headers:{get:()=>null},json:async()=>({id:'req-42',model:'model',choices:[{message:{content:JSON.stringify({recommendations:[{id:'atlas',reason:'Research skills'},{id:'invented',reason:'fake'}]})}}]})});const r=await matchOn0G('research',agents,fetcher,{OG_API_KEY:'test',OG_MODEL:'model'});assert.equal(r.requestId,'req-42');assert.deepEqual(r.recommendations.map(x=>x.id),['atlas'])});
+test('0G rejects upstream error',async()=>await assert.rejects(()=>matchOn0G('research',agents,async()=>({ok:false,status:429}),{OG_API_KEY:'test'})));
+test('HTTP app and blocked owner claim',async()=>{const server=createServer();await new Promise(r=>server.listen(0,'127.0.0.1',r));try{const port=server.address().port;const a=await fetch(`http://127.0.0.1:${port}/api/agents`);assert.equal((await a.json()).agents.length,6);const b=await fetch(`http://127.0.0.1:${port}/api/world/claim-owner`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});assert.equal(b.status,403);const c=await fetch(`http://127.0.0.1:${port}/`);assert.equal(c.status,200)}finally{server.close()}});
