@@ -8,6 +8,7 @@ ETHGlobal asks teams to document where and how AI was used. This is that record.
 | Import AgentCV v1.4 | added `src/evals.js`, `src/eval-store.js`, `src/independent-runner.js`, `frontend/`, `scripts/*-demo.js`, `scripts/example-agent.js`, `docs/*` updates, `tests/evals.test.js`, `tests/independent-runner.test.js` | [VERIFY: same assistant] | Asked for evaluation-backed resumes and the React demo; reviewed |
 | Review fixes | `src/world.js`, `src/og.js`, `src/server.js`, `src/independent-runner.js`, `frontend/src/main.jsx`, `scripts/baseline-agent.js`, `scripts/*arkiv.js`, `tests/catalog.test.js`, `package.json`, lockfiles, CI, `README.md`, `docs/DEMO_SCRIPT.md`, `docs/SUBMISSION.md` | Claude (Anthropic) | Requested an adversarial code review; approved the fixes |
 | Sponsor documentation | `README.md` (sponsor section), this file | Claude (Anthropic) | Requested |
+| On-chain attestation | `contracts/EvalAttestationRegistry.sol`, `contracts/compile.cjs`, `src/attest.js`, `scripts/deploy-attestation.mjs`, `scripts/attest-run.mjs`, `tests/contract.test.js`, `tests/attest.test.js` | Claude (Anthropic) | Asked for one small, real, on-chain attestation contract; an EVM test caught a real existence-sentinel bug (timestamp vs attester) that was then fixed |
 
 **Human work to record before submitting** (judges look for meaningful human contribution):
 

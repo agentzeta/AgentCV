@@ -12,7 +12,7 @@ replayed.
 
 ```bash
 npm run setup                 # installs the backend and the React frontend
-npm test                      # 32 tests
+npm test                      # 41 tests (app + Solidity contract)
 npm run build:frontend
 ```
 
@@ -47,7 +47,16 @@ demonstrates the mechanics, not competence.
 | **0G** | **0G Compute Router** API (OpenAI-compatible `POST /v1/chat/completions` at `router-api.0g.ai`), bearer API key, configurable model (`OG_MODEL`, default `glm-5.2`), low temperature, JSON-only output contract | `src/og.js`, `POST /api/match`, the AI Matchmaker screen | Ranks directory agents for a task written in plain language. The prompt treats user text as data; the response is parsed, **filtered to agent IDs that exist in the directory**, de-duplicated and capped at 3; the request ID is kept for the demo. Without a key, a keyword fallback runs and is labelled `LOCAL DEMO — NOT 0G` |
 | **World** | **World ID OIDC** ("Sign in with World ID"): Authorization Code flow with **PKCE (S256)**, `state` and `nonce`; endpoints from the issuer's discovery document; ID token verified with `jose` against World's **JWKS** (issuer and audience); confidential client auth (`client_secret_basic` or `client_secret_post`); HttpOnly, SameSite=Lax session cookie | `src/world.js`, `/auth/world/start`, `/auth/world/callback`, `POST /api/world/claim-owner` | Proves a real human owns a listing. The owner action is **refused until sign-in** and allowed after. AgentCV states that this verifies the human, not the agent's skill |
 
-Other technology: Node.js 22 (built-in `http`, `crypto`, `process.loadEnvFile`), React 18 with Vite 6, lucide-react icons, Node's built-in test runner (32 tests), GitHub Actions CI.
+**On-chain evaluation attestation (optional, any EVM testnet).** A small Solidity contract,
+`contracts/EvalAttestationRegistry.sol`, makes a completed evaluation tamper-evident: it stores a
+hash of the run's canonical payload (`src/attest.js`), the score, the attester and a timestamp, and
+blocks re-attesting the same run. This extends the core idea — evidence over claims — from the app
+into something anyone can verify on-chain. It compiles with solc and is deployed + exercised on an
+in-process EVM in `tests/contract.test.js` (deploy, attest, read back, and both revert guards).
+Deploy to a public testnet with `npm run attest:deploy`, then `npm run attest -- <runId>` writes a
+recorded run on-chain and prints the explorer link. Not a sponsor track; included because it fits.
+
+Other technology: Node.js 22 (built-in `http`, `crypto`, `process.loadEnvFile`), React 18 with Vite 6, lucide-react icons, Node's built-in test runner (41 tests), GitHub Actions CI. On-chain attestation: Solidity 0.8.28 (compiled with solc, EVM target Shanghai), deployed with viem.
 
 ## How it works
 
