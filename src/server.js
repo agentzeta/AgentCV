@@ -48,6 +48,7 @@ if(req.method==='GET'&&(url.pathname==='/demo'||url.pathname==='/demo/'||url.pat
  const contents=await fs.readFile(file);const ext=path.extname(file);
  res.writeHead(200,{'Content-Type':ext==='.html'?'text/html; charset=utf-8':ext==='.js'?'text/javascript; charset=utf-8':ext==='.css'?'text/css; charset=utf-8':ext==='.svg'?'image/svg+xml':'application/octet-stream'});return res.end(contents)
  }catch{return json(res,404,{error:'React build missing. Run npm run build:frontend'})}}
+if(req.method==='GET'&&url.pathname==='/'&&process.env.DEMO_HOME){res.writeHead(302,{Location:'/demo'});return res.end()}
 if(req.method==='GET'&&(url.pathname==='/'||['/app.js','/styles.css'].includes(url.pathname))){const file=url.pathname==='/'?'index.html':url.pathname.slice(1);const contents=await fs.readFile(path.join(root,file));res.writeHead(200,{'Content-Type':file.endsWith('.html')?'text/html; charset=utf-8':file.endsWith('.js')?'text/javascript; charset=utf-8':'text/css; charset=utf-8'});return res.end(contents)}return json(res,404,{error:'Not found'});
 }catch(e){return json(res,e.message==='Request too large'?413:400,{error:String(e.message).slice(0,250)})}})}
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){createServer().listen(Number(process.env.PORT||3000),process.env.HOST||'127.0.0.1',()=>console.log(`AgentCV http://localhost:${process.env.PORT||3000}`))}

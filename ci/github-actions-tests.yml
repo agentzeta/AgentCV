@@ -1,3 +1,7 @@
+# GitHub Actions test workflow, parked here because GitHub cannot start jobs while the
+# agentzeta account has a billing lock (every run failed with "The job was not started because
+# your account is locked due to a billing issue"; no test ever ran or failed).
+# To re-enable once billing is resolved:  git mv ci/github-actions-tests.yml .github/workflows/ci.yml
 name: Tests
 on: [push, pull_request]
 jobs:

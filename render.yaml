@@ -1,0 +1,31 @@
+# One-click deploy on Render: New > Blueprint > select this repository.
+services:
+  - type: web
+    name: agentcv
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start:deploy
+    healthCheckPath: /api/agents
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: HOST
+        value: 0.0.0.0
+      - key: DEMO_HOME
+        value: "1"
+      # Optional sponsor credentials: add in the Render dashboard, never in this file.
+      - key: OG_API_KEY
+        sync: false
+      - key: WORLD_CLIENT_ID
+        sync: false
+      - key: WORLD_CLIENT_SECRET
+        sync: false
+      - key: WORLD_REDIRECT_URI
+        sync: false
+      - key: ARKIV_PRIVATE_KEY
+        sync: false
+      - key: ARKIV_ACCESS_KEY
+        sync: false
+      - key: ADMIN_PUBLISH_TOKEN
+        sync: false
