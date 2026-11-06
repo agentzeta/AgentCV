@@ -106,11 +106,9 @@ and new profiles live in memory, and run history is a local JSONL file.
 
 ## ETHGlobal disclosure
 
-- **Timing:** [FILL: when the first AgentCV code was written, relative to the start of hacking].
-- **AI assistance:** see [`docs/AI_USAGE.md`](docs/AI_USAGE.md) for which files each AI tool
-  produced. The history shows the steps: the v1.0 and v1.4 packages imported as delivered, then
-  review fixes, then documentation.
-- **Human contribution:** [FILL: product direction, sponsor setup, live testing, demo].
+
+- **AI assistance:** Used Claude assistance for coding
+- **Human contribution:** product direction, PRD creation, Read.me, live testing, demo.
 
 ## License
 
