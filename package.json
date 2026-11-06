@@ -19,10 +19,12 @@
     "dev:frontend": "npm --prefix frontend run dev",
     "build:frontend": "npm --prefix frontend run build",
     "install:frontend": "npm --prefix frontend install",
-    "demo:react": "npm run build:frontend && npm start"
+    "demo:react": "npm run build:frontend && npm start",
+    "agent:baseline": "node scripts/baseline-agent.js",
+    "setup": "npm install && npm --prefix frontend install"
   },
   "dependencies": {
-    "@arkiv-network/sdk": "latest",
+    "@arkiv-network/sdk": "1.0.1",
     "viem": "^2.37.0",
     "jose": "^6.1.0"
   },

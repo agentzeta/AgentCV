@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 const hash=x=>crypto.createHash('sha256').update(JSON.stringify(x)).digest('hex');
-const benchmark={id:'routing-heldout',version:'2026-11-06.1',name:'Customer routing — held-out set',cases:[
+const benchmark={id:'routing-heldout',version:'2026-11-06.1',name:'Customer routing — 10 fixed tasks',cases:[
 {id:'h01',input:'Please reverse the charge that appears twice on my card',expected:'billing'},
 {id:'h02',input:'My login page freezes after I enter the verification code',expected:'technical'},
 {id:'h03',input:'Can your team show me the enterprise pricing tiers?',expected:'sales'},
@@ -13,7 +13,7 @@ const benchmark={id:'routing-heldout',version:'2026-11-06.1',name:'Customer rout
 {id:'h09',input:'Could you prepare a quote for 200 seats?',expected:'sales'},
 {id:'h10',input:'The tax amount on my invoice is incorrect',expected:'billing'}]};
 export const RUNNER_VERSION='1.0.0';
-export function benchmarkMetadata(){return {id:benchmark.id,version:benchmark.version,name:benchmark.name,count:benchmark.cases.length,metric:'exact-match accuracy',fixtureDigest:hash(benchmark.cases),visibility:'private until run; results disclose labels after execution'}}
+export function benchmarkMetadata(){return {id:benchmark.id,version:benchmark.version,name:benchmark.name,count:benchmark.cases.length,metric:'exact-match accuracy',fixtureDigest:hash(benchmark.cases),visibility:'public: the tasks and labels are in this repository, so a score on them can be memorized'}}
 function safeUrl(endpoint){const url=new URL(endpoint);if(url.protocol!=='http:'||!['127.0.0.1','localhost','::1','[::1]'].includes(url.hostname)||url.username||url.password||url.hash)throw Error('Only loopback HTTP endpoints are permitted by default');return url.toString()}
 function normalizeOutput(data){const value=typeof data==='string'?data:data&&typeof data.output==='string'?data.output:null;if(value===null||value.length>2000)throw Error('Agent response must contain an output string <=2000 characters');return value.trim().toLowerCase()}
 export async function executeIndependentRun({agentId,endpoint,runLabel=''},validAgents,{fetchImpl=fetch,now=()=>new Date().toISOString()}={}){

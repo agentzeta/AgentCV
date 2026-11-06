@@ -8,3 +8,8 @@ coverage/
 
 # Local evaluation submissions
 data/
+
+# React production build (run npm run build:frontend)
+public/react/
+frontend/node_modules/
+frontend/dist/

@@ -1,6 +1,6 @@
 # Independent evaluation runner (v1.2)
 
-This feature executes a *real HTTP agent* against 10 server-held-out customer routing tasks. Unlike the self-submitted evaluation mode, the runner itself issues each task, receives the response, computes exact-match scores, and persists case-level inputs, outputs, errors, elapsed milliseconds, a benchmark fixture SHA-256, runner version, endpoint, timestamp, manifest digest and output digest. All 10 cases are scored, including failures. Scores do not measure agent safety or broad competence.
+This feature executes a *real HTTP agent* against 10 fixed customer-routing tasks (public in this repository, so scores can be memorized). Unlike the self-submitted evaluation mode, the runner itself issues each task, receives the response, computes exact-match scores, and persists case-level inputs, outputs, errors, elapsed milliseconds, a benchmark fixture SHA-256, runner version, endpoint, timestamp, manifest digest and output digest. All 10 cases are scored, including failures. Scores do not measure agent safety or broad competence.
 
 ## Run locally
 

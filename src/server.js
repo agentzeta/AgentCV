@@ -10,6 +10,8 @@ import {startWorld,finishWorld} from './world.js';
 import {publicSuites,evaluateSubmission,summarizeAgent} from './evals.js';
 import {EvalStore} from './eval-store.js';
 import {benchmarkMetadata,executeIndependentRun,replayRun} from './independent-runner.js';
+// Load .env if present (Node >= 20.12 built-in); real environment variables take precedence.
+try{process.loadEnvFile()}catch{}
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../public');
 const sessions=new Map(),attempts=new Map(),community=[];
 const evalStore=new EvalStore(process.env.EVAL_STORE_PATH||path.resolve(process.cwd(),'data/eval-runs.jsonl'));
@@ -35,7 +37,7 @@ if(req.method==='POST'&&url.pathname==='/api/demo-match'){const b=await body(req
 if(req.method==='POST'&&url.pathname==='/api/agents'){const a=normalizeAgent(await body(req));community.push(a);return json(res,201,{agent:a,persistence:'local server memory only'})}
 if(req.method==='POST'&&url.pathname==='/api/arkiv/publish'){const b=await body(req);const a=[...agents,...community].find(x=>x.id===b.id);if(!a)return json(res,404,{error:'Agent not found'});if(!process.env.ARKIV_PRIVATE_KEY)return json(res,503,{error:'Arkiv not configured'});if(!process.env.ADMIN_PUBLISH_TOKEN||req.headers['x-admin-publish-token']!==process.env.ADMIN_PUBLISH_TOKEN)return json(res,403,{error:'Admin publish token required to spend testnet gas'});const result=await publishProfile(a);return json(res,200,result)}
 if(req.method==='GET'&&url.pathname==='/api/arkiv/profiles'){try{return json(res,200,{profiles:await readProfiles()})}catch(e){return json(res,503,{error:`Arkiv unavailable: ${e.message}`})}}
-if(req.method==='GET'&&url.pathname==='/auth/world/start'){const attempt=startWorld();attempts.set(id,attempt);res.writeHead(302,{Location:attempt.url,'Cache-Control':'no-store'});return res.end()}
+if(req.method==='GET'&&url.pathname==='/auth/world/start'){let attempt;try{attempt=await startWorld()}catch(e){res.writeHead(302,{Location:'/demo?world=failed','Cache-Control':'no-store'});return res.end()}attempts.set(id,attempt);res.writeHead(302,{Location:attempt.url,'Cache-Control':'no-store'});return res.end()}
 if(req.method==='GET'&&url.pathname==='/auth/world/callback'){const attempt=attempts.get(id);attempts.delete(id);try{s.world=await finishWorld(Object.fromEntries(url.searchParams),attempt);res.writeHead(302,{Location:'/?world=success'});return res.end()}catch(e){res.writeHead(302,{Location:'/?world=failed'});return res.end()}}
 if(req.method==='POST'&&url.pathname==='/api/world/logout'){s.world=null;return json(res,200,{ok:true})}
 if(req.method==='POST'&&url.pathname==='/api/world/claim-owner'){if(!s.world)return json(res,403,{error:'World authentication required'});return json(res,200,{ok:true,ownerVerifiedByWorld:true,scope:'This browser session only; not a verified agent credential'})}
