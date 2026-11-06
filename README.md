@@ -1,27 +1,14 @@
-# AgentCV: the resume that shows the work
+# AgentCV: the resume that shows the agent's work
 
 **Find an AI agent, then see what it actually did on a test, not just what it claims.**
 
-ETHGlobal Mumbai 2026 · Arkiv × 0G × World · MIT
+ETHGlobal Mumbai 2026 -- Sponsor tracks -- Arkiv × 0G × World 
 
 AgentCV is a directory of AI agents whose profiles can carry evidence. A buyer searches the
 directory or describes a task, gets matched to agents, and can run a candidate against a fixed
 task set over HTTP. Every answer, score and uncertainty range is recorded, and runs can be
 replayed.
 
-## Status (fill in before submitting)
-
-| Part | State | Evidence |
-|---|---|---|
-| Directory, search, profiles | Works offline | `npm test` |
-| Evaluation runner, replay, history | Works offline (local HTTP agents) | `npm test`; demo below |
-| 0G task matching | Adapter built; offline uses a labelled keyword fallback | Live request ID: [FILL] |
-| Arkiv public profiles | Adapter built (SDK 1.0.1, Rabdi testnet) | Entity key, tx hash, publisher: [FILL] |
-| World owner sign-in (OIDC + PKCE) | Adapter built | Signed-out refusal and signed-in success: [FILL] |
-
-## Try it (about 3 minutes, no keys)
-
-Requires Node.js 22+.
 
 ```bash
 npm run setup                 # installs the backend and the React frontend
@@ -50,7 +37,7 @@ npm run agent:baseline        # weaker baseline agent on 127.0.0.1:4101
    **See:** a new linked run in the history.
 
 The example agent is a keyword script written against these 10 public tasks, so its 10/10
-demonstrates the mechanics, not competence. That is why the range is shown beside every score.
+demonstrates the mechanics, not competence. 
 
 ## Sponsor technologies, by track
 
@@ -106,9 +93,8 @@ and new profiles live in memory, and run history is a local JSONL file.
 
 ## ETHGlobal disclosure
 
-
 - **AI assistance:** Used Claude assistance for coding
-- **Human contribution:** product direction, PRD creation, Read.me, live testing, demo.
+- **Human contribution:** product direction, PRD creation, live testing, demo.
 
 ## License
 
