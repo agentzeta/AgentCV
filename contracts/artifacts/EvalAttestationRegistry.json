@@ -1,0 +1,198 @@
+{
+  "contractName": "EvalAttestationRegistry",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "runId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "AlreadyAttested",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidScore",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "runId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "agent",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "attester",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "resultHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32",
+          "name": "passed",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32",
+          "name": "total",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "Attested",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "runId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "agent",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "resultHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint32",
+          "name": "passed",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint32",
+          "name": "total",
+          "type": "uint32"
+        },
+        {
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "attest",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "count",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "runId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getAttestation",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "attester",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "agent",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "resultHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "passed",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "total",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint64",
+              "name": "timestamp",
+              "type": "uint64"
+            },
+            {
+              "internalType": "string",
+              "name": "uri",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct EvalAttestationRegistry.Attestation",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "runId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isAttested",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6080604052348015600e575f5ffd5b506107f38061001c5f395ff3fe608060405234801561000f575f5ffd5b506004361061004a575f3560e01c806306661abd1461004e578063a3112a641461006a578063c13c23961461008a578063cad21d32146100c4575b5f5ffd5b61005760015481565b6040519081526020015b60405180910390f35b61007d61007836600461045b565b6100d9565b60405161006191906104b5565b6100b461009836600461045b565b5f908152602081905260409020546001600160a01b0316151590565b6040519015158152602001610061565b6100d76100d236600461055c565b610227565b005b6040805160e0810182525f8082526020820181905291810182905260608082018390526080820183905260a082019290925260c08101919091525f8281526020818152604091829020825160e08101845281546001600160a01b03908116825260018301541692810192909252600281015492820192909252600382015463ffffffff80821660608401526401000000008204166080830152600160401b900467ffffffffffffffff1660a082015260048201805491929160c0840191906101a09061061b565b80601f01602080910402602001604051908101604052809291908181526020018280546101cc9061061b565b80156102175780601f106101ee57610100808354040283529160200191610217565b820191905f5260205f20905b8154815290600101906020018083116101fa57829003601f168201915b5050505050815250509050919050565b5f878152602081905260409020546001600160a01b03161561026257604051622e0fb560e21b81526004810188905260240160405180910390fd5b63ffffffff8316158061028057508263ffffffff168463ffffffff16115b1561029e57604051631556136560e01b815260040160405180910390fd5b6040518060e00160405280336001600160a01b03168152602001876001600160a01b031681526020018681526020018563ffffffff1681526020018463ffffffff1681526020014267ffffffffffffffff16815260200183838080601f0160208091040260200160405190810160405280939291908181526020018383808284375f9201829052509390945250508981526020818152604091829020845181546001600160a01b039182166001600160a01b031991821617835592860151600183018054919092169316929092179091559083015160028201556060830151600382018054608086015160a087015167ffffffffffffffff16600160401b026fffffffffffffffff00000000000000001963ffffffff9283166401000000000267ffffffffffffffff199094169290951691909117919091179290921691909117905560c083015190915060048201906103f890826106b3565b505060018054810190555060405133906001600160a01b0388169089907f9da0606f1742a37617e5f12f2975b12a5a42011aed5533f7162767962df6c7af9061044a908a908a908a908a908a9061076e565b60405180910390a450505050505050565b5f6020828403121561046b575f5ffd5b5035919050565b5f81518084525f5b818110156104965760208185018101518683018201520161047a565b505f602082860101526020601f19601f83011685010191505092915050565b6020815260018060a01b03825116602082015260018060a01b0360208301511660408201526040820151606082015263ffffffff60608301511660808201525f608083015161050c60a084018263ffffffff169052565b5060a083015167ffffffffffffffff811660c08401525060c083015160e08084015261053c610100840182610472565b949350505050565b803563ffffffff81168114610557575f5ffd5b919050565b5f5f5f5f5f5f5f60c0888a031215610572575f5ffd5b8735965060208801356001600160a01b038116811461058f575f5ffd5b9550604088013594506105a460608901610544565b93506105b260808901610544565b925060a088013567ffffffffffffffff8111156105cd575f5ffd5b8801601f81018a136105dd575f5ffd5b803567ffffffffffffffff8111156105f3575f5ffd5b8a6020828401011115610604575f5ffd5b602082019350809250505092959891949750929550565b600181811c9082168061062f57607f821691505b60208210810361064d57634e487b7160e01b5f52602260045260245ffd5b50919050565b634e487b7160e01b5f52604160045260245ffd5b601f8211156106ae57805f5260205f20601f840160051c8101602085101561068c5750805b601f840160051c820191505b818110156106ab575f8155600101610698565b50505b505050565b815167ffffffffffffffff8111156106cd576106cd610653565b6106e1816106db845461061b565b84610667565b6020601f821160018114610713575f83156106fc5750848201515b5f19600385901b1c1916600184901b1784556106ab565b5f84815260208120601f198516915b828110156107425787850151825560209485019460019092019101610722565b508482101561075f57868401515f19600387901b60f8161c191681555b50505050600190811b01905550565b85815263ffffffff8516602082015263ffffffff8416604082015260806060820152816080820152818360a08301375f81830160a090810191909152601f909201601f1916010194935050505056fea2646970667358221220395c02cd6ee501db8ad331bba70a9d978a02b46624a9928e3e3750068cc1b96e64736f6c634300081c0033",
+  "compiler": "solc 0.8.28+commit.7893614a.Emscripten.clang"
+}

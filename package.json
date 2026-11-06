@@ -23,12 +23,20 @@
     "agent:baseline": "node scripts/baseline-agent.js",
     "setup": "npm install && npm --prefix frontend install",
     "start:deploy": "node scripts/serve-all.js",
-    "build": "npm ci --prefix frontend && npm run build:frontend"
+    "build": "npm ci --prefix frontend && npm run build:frontend",
+    "attest:deploy": "node scripts/deploy-attestation.mjs",
+    "attest": "node scripts/attest-run.mjs"
   },
   "dependencies": {
     "@arkiv-network/sdk": "1.0.1",
-    "viem": "^2.37.0",
-    "jose": "^6.1.0"
+    "jose": "^6.1.0",
+    "viem": "^2.37.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "solc": "0.8.28",
+    "@ethereumjs/vm": "8.1.1",
+    "@ethereumjs/tx": "5.4.0",
+    "@ethereumjs/util": "9.1.0"
+  }
 }
