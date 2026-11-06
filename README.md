@@ -52,6 +52,16 @@ npm run agent:baseline        # weaker baseline agent on 127.0.0.1:4101
 The example agent is a keyword script written against these 10 public tasks, so its 10/10
 demonstrates the mechanics, not competence. That is why the range is shown beside every score.
 
+## Sponsor technologies, by track
+
+| Track | Technology used | Where | What it does in AgentCV |
+|---|---|---|---|
+| **Arkiv** | `@arkiv-network/sdk` 1.0.1 on the **Rabdi testnet** (`rabdi` chain); `defineSchema` with typed, **indexed** attributes (`owner` address, `category`, `agentId`); `walletClient.createEntity` with `ExpirationTime.fromDays(30)`; `publicClient.select(...).from(schema).fetch()` queries; viem accounts and HTTP transport; Arkiv access key | `src/arkiv.js`, `scripts/publish-arkiv.js`, `scripts/read-arkiv.js`, `POST /api/arkiv/publish`, `GET /api/arkiv/profiles`, `arkiv/` (schema, why, how, reach, friction) | Each agent profile is a public, wallet-owned, schema-defined entity that **expires after 30 days** unless republished, so stale listings disappear by design. The directory reads profiles back with an indexed query |
+| **0G** | **0G Compute Router** API (OpenAI-compatible `POST /v1/chat/completions` at `router-api.0g.ai`), bearer API key, configurable model (`OG_MODEL`, default `glm-5.2`), low temperature, JSON-only output contract | `src/og.js`, `POST /api/match`, the AI Matchmaker screen | Ranks directory agents for a task written in plain language. The prompt treats user text as data; the response is parsed, **filtered to agent IDs that exist in the directory**, de-duplicated and capped at 3; the request ID is kept for the demo. Without a key, a keyword fallback runs and is labelled `LOCAL DEMO — NOT 0G` |
+| **World** | **World ID OIDC** ("Sign in with World ID"): Authorization Code flow with **PKCE (S256)**, `state` and `nonce`; endpoints from the issuer's discovery document; ID token verified with `jose` against World's **JWKS** (issuer and audience); confidential client auth (`client_secret_basic` or `client_secret_post`); HttpOnly, SameSite=Lax session cookie | `src/world.js`, `/auth/world/start`, `/auth/world/callback`, `POST /api/world/claim-owner` | Proves a real human owns a listing. The owner action is **refused until sign-in** and allowed after. AgentCV states that this verifies the human, not the agent's skill |
+
+Other technology: Node.js 22 (built-in `http`, `crypto`, `process.loadEnvFile`), React 18 with Vite 6, lucide-react icons, Node's built-in test runner (32 tests), GitHub Actions CI.
+
 ## How it works
 
 | Step | What happens | Code |
@@ -97,10 +107,9 @@ and new profiles live in memory, and run history is a local JSONL file.
 ## ETHGlobal disclosure
 
 - **Timing:** [FILL: when the first AgentCV code was written, relative to the start of hacking].
-- **AI assistance:** most code and documentation was drafted with AI assistants [VERIFY: ChatGPT
-  and Claude]. Commits authored "Claude" are AI-made. The first commit imports the package as
-  delivered; the second contains review fixes (World sign-in, `.env` loading, honest evaluation
-  display, pinned SDK, lockfiles).
+- **AI assistance:** see [`docs/AI_USAGE.md`](docs/AI_USAGE.md) for which files each AI tool
+  produced. The history shows the steps: the v1.0 and v1.4 packages imported as delivered, then
+  review fixes, then documentation.
 - **Human contribution:** [FILL: product direction, sponsor setup, live testing, demo].
 
 ## License
