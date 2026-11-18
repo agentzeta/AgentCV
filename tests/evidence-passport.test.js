@@ -1,0 +1,18 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {generateKeyPairSync} from 'node:crypto';
+import {canonical,configurationDigest,signEvidence,inspectEvidence,verifyEvidence} from '../src/evidence-passport.js';
+const {publicKey,privateKey}=generateKeyPairSync('ed25519');
+const keys={evaluator:publicKey.export({format:'pem',type:'spki'})};
+const config={agentId:'a',deploymentId:'d',controllerKeyId:'owner',modelId:'m',modelVersion:'1',codeDigest:'a'.repeat(64),harnessDigest:'b'.repeat(64),memoryPolicyDigest:'c'.repeat(64),toolsDigest:'d'.repeat(64)};
+const payload={id:'e1',runId:'r1',subjectDigest:configurationDigest(config),suiteId:'s',suiteVersion:'1',fixtureDigest:'e'.repeat(64),outputDigest:'f'.repeat(64),passed:8,total:10,issuedAt:100,expiresAt:300,evidenceType:'RUNNER_OBSERVED'};
+const signed=(changes={})=>signEvidence({...payload,...changes},'evaluator',privateKey);
+const inspect=(envelopes=[signed()],changes={})=>inspectEvidence({configuration:config,envelopes,trustedKeys:keys,revocations:{asOf:100,validUntil:300,ids:[]},now:200,...changes});
+test('canonical object order is stable; unsupported values rejected',()=>{assert.equal(canonical({b:2,a:1}),canonical({a:1,b:2}));assert.throws(()=>canonical({x:NaN}));assert.throws(()=>canonical({x:undefined}));});
+test('trusted signature and exact declaration produce scoped evidence',()=>{assert.equal(inspect().rows[0].state,'IN_SCOPE');assert.equal(inspect().configurationAssurance,'DECLARED_NOT_ATTESTED');});
+test('tampering and unknown issuers fail',()=>{let e=signed();e.payload.passed=10;assert.equal(verifyEvidence(e,keys),false);assert.equal(inspect([signed()],{trustedKeys:{}}).rows[0].state,'INVALID');});
+test('memory policy change does not inherit score',()=>assert.equal(inspect([signed()],{configuration:{...config,memoryPolicyDigest:'0'.repeat(64)}}).rows[0].state,'OTHER_CONFIGURATION'));
+test('expiry, future dates, revocation and missing status remain distinct',()=>{assert.equal(inspect([signed()],{now:300,revocations:{asOf:300,validUntil:400,ids:[]}}).rows[0].state,'EXPIRED');assert.equal(inspect([signed({issuedAt:201})]).rows[0].state,'FUTURE');assert.equal(inspect([signed()],{revocations:{asOf:100,validUntil:300,ids:['e1']}}).rows[0].state,'REVOKED');assert.equal(inspect([signed()],{revocations:null}).rows[0].state,'STATUS_UNKNOWN');});
+test('freshness bound is exclusive and future snapshots rejected',()=>{assert.equal(inspect([signed()],{now:300}).rows[0].state,'STATUS_UNKNOWN');assert.equal(inspect([signed()],{revocations:{asOf:201,validUntil:300,ids:[]}}).rows[0].state,'STATUS_UNKNOWN');});
+test('self-report and repeated runs never inflate independent count',()=>{const out=inspect([signed(),signed(),signed({id:'e2',runId:'r2',issuedAt:101,passed:2})]);assert.equal(out.rows[1].state,'DUPLICATE');assert.equal(out.summaries.length,1);assert.equal(out.summaries[0].passed,2);assert.equal(inspect([signed({evidenceType:'SELF_REPORTED'})]).summaries.length,0);});
+test('invalid counts and missing configuration are rejected',()=>{assert.equal(inspect([signed({passed:11})]).rows[0].state,'INVALID');assert.throws(()=>configurationDigest({}));assert.throws(()=>signed({total:1.5}));});

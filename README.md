@@ -108,3 +108,13 @@ and new profiles live in memory, and run history is a local JSONL file.
 ## License
 
 MIT
+
+## Configuration-scoped evidence and commerce previews
+
+New experimental modules add signed, configuration-scoped evidence inspection and two read-only Uniswap previews. They are separate from the existing demo score and do not upgrade its assurance claims.
+
+- `node scripts/passport-demo.js`: synthetic signed evidence; changing the declared memory policy prevents automatic reuse of a score.
+- `node scripts/commerce-demo.js`: synthetic net-recipient quote receipt and invoice funding preview.
+- `npm test`: includes signature tampering, revoked/expired/unknown evidence, fee-net invoice shortfalls, quote freshness and mocked API transport checks.
+
+Read [identity and reputation limits](docs/IDENTITY_AND_REPUTATION.md) and [commerce preview setup](docs/COMMERCE_PREVIEWS.md). Remote runtime attestation, identity proofing, spend authorization, live Uniswap validation and production custody are not implemented.
